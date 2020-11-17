@@ -1,8 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { ChangeEvent, useEffect, useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
+  const [val, setVal] = useState("");
+  const [composing, setComposing] = useState(false);
+
+  const trimmedVal = val.trim();
+
+  useEffect(() => {
+    if (!composing) search(trimmedVal);
+  }, [composing, trimmedVal]);
+
+  const handleCompositionStart = () => {
+    setComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setComposing(false);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setVal(e.target.value);
+  };
+
+  const search = (word: string) => {
+    console.log("search keyword is ", word);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +43,13 @@ function App() {
         >
           Learn React
         </a>
+
+        <input
+          value={val}
+          onChange={handleChange}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+        />
       </header>
     </div>
   );
