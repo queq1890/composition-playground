@@ -1,5 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import logo from "./logo.svg";
+import debounce from "lodash/debounce";
 import "./App.css";
 
 function App() {
@@ -8,9 +15,9 @@ function App() {
 
   const trimmedVal = val.trim();
 
-  useEffect(() => {
-    if (!composing) search(trimmedVal);
-  }, [composing, trimmedVal]);
+  const search = useCallback((word: string) => {
+    console.log("search keyword is ", word);
+  }, []);
 
   const handleCompositionStart = () => {
     setComposing(true);
@@ -24,9 +31,11 @@ function App() {
     setVal(e.target.value);
   };
 
-  const search = (word: string) => {
-    console.log("search keyword is ", word);
-  };
+  const debouncedSearch = useMemo(() => debounce(search, 500), [search]);
+
+  useEffect(() => {
+    if (!composing) debouncedSearch(trimmedVal);
+  }, [composing, trimmedVal, debouncedSearch]);
 
   return (
     <div className="App">
